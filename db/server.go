@@ -22,6 +22,6 @@ func StartSession(conn net.Conn) {
 			continue
 		}
 
-		fmt.Print(string(b))
+		p.HandleRead(b)
 	}
 }
