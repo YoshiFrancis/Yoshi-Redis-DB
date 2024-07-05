@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	"log"
 	"net"
 )
 
@@ -18,8 +17,7 @@ func StartSession(conn net.Conn) {
 	for {
 		b, err := p.r.ReadByte()
 		if err != nil {
-			log.Fatal(err)
-			continue
+			return
 		}
 
 		p.HandleRead(b)

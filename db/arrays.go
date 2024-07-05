@@ -22,7 +22,48 @@ func (p *Parser) ParseArray() (arr []string) {
 	array := make([]string, size)
 
 	for idx := range size { // assuiming it is bulk string
-		p.r.ReadByte() // the initial $
+		b, _ := p.r.ReadByte() // the initial $
+
+		if b == ':' { // integer
+			integer := p.ParseInteger()
+			fmt.Println(integer)
+		} else if b == '#' { // boolean
+			_, err := p.conn.Write([]byte("data type not implemented in Yoshi-Redis-DB"))
+			if err != nil {
+				fmt.Println("Error writing error msg response", err.Error())
+				return
+			}
+			p.r.ReadBytes('\n')
+		} else if b == ',' { // double
+			_, err := p.conn.Write([]byte("data type not implemented in Yoshi-Redis-DB"))
+			if err != nil {
+				fmt.Println("Error writing error msg response", err.Error())
+				return
+			}
+			p.r.ReadBytes('\n')
+		} else if b == '(' { // big number
+			_, err := p.conn.Write([]byte("data type not implemented in Yoshi-Redis-DB"))
+			if err != nil {
+				fmt.Println("Error writing error msg response", err.Error())
+				return
+			}
+			p.r.ReadBytes('\n')
+		} else if b == '&' { // maps
+			_, err := p.conn.Write([]byte("data type not implemented in Yoshi-Redis-DB"))
+			if err != nil {
+				fmt.Println("Error writing error msg response", err.Error())
+				return
+			}
+			p.r.ReadBytes('\n')
+		} else if b == '~' { // SETS
+			_, err := p.conn.Write([]byte("data type not implemented in Yoshi-Redis-DB"))
+			if err != nil {
+				fmt.Println("Error writing error msg response", err.Error())
+				return
+			}
+			p.r.ReadBytes('\n')
+		}
+
 		array[idx] = p.ParseBulkString()
 	}
 
