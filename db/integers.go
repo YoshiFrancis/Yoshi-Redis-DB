@@ -2,24 +2,22 @@ package db
 
 import (
 	"fmt"
+	"io"
 	"strconv"
-	"strings"
 )
 
-func (p *Parser) ParseInteger() int {
-	numBytes, err := p.r.ReadBytes('\n')
+func ParseInteger(bytesReader io.ByteReader) int {
+	sign, err := bytesReader.ReadByte()
 	if err != nil {
 		fmt.Println("problem parsing integer: ", err.Error())
 		return -1
 	}
 	negativeFlag := false
-	if numBytes[0] == '-' {
-		numBytes[0] = '0'
+	if sign == '-' {
 		negativeFlag = true
-	} else if numBytes[0] == '+' {
-		numBytes[0] = '0'
 	}
-	parsed_num, err := strconv.Atoi(strings.TrimSpace(string(numBytes)))
+	numBytes, _ := bytesReader.ReadByte()
+	parsed_num, err := strconv.Atoi(string(numBytes))
 	if err != nil {
 		fmt.Println("Given an invalid integer")
 		return -1
@@ -27,5 +25,7 @@ func (p *Parser) ParseInteger() int {
 	if negativeFlag {
 		parsed_num *= -1
 	}
+	bytesReader.ReadByte() // \r
+	bytesReader.ReadByte() // \n
 	return parsed_num
 }

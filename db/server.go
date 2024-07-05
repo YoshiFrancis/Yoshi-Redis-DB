@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func StartSession(conn net.Conn) {
+func StartSession(conn net.Conn, ys *YoshiStore) {
 	fmt.Println("New client sessions started!", conn)
 	defer func() {
 		fmt.Println("disconnection from client: ", conn)
@@ -15,12 +15,14 @@ func StartSession(conn net.Conn) {
 	p := NewParser(conn)
 
 	for {
+
 		buf := make([]byte, 1024)
 		_, err := p.r.Read(buf)
 		if err != nil {
 			return
 		}
 
-		go ServeRequest(p.conn, buf)
+		go ServeRequest(p.conn, ys, buf)
+
 	}
 }

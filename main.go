@@ -13,6 +13,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	ys := db.NewStorage()
+
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
@@ -20,6 +22,6 @@ func main() {
 			continue
 		}
 
-		go db.StartSession(conn)
+		go db.StartSession(conn, ys)
 	}
 }

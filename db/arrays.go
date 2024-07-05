@@ -14,7 +14,6 @@ func ParseArray(conn net.Conn, msg []byte) (arr []Value) {
 	if err != nil {
 		fmt.Println("error parsing array size:", err.Error())
 	}
-	fmt.Println("\nbytesize in string:", string(byteSize))
 	size, err := strconv.Atoi(string(byteSize))
 	if err != nil {
 		fmt.Println("invalid size parsing array")
@@ -23,25 +22,25 @@ func ParseArray(conn net.Conn, msg []byte) (arr []Value) {
 
 	r.ReadByte() // \r
 	r.ReadByte() // \n
-
 	array := make([]Value, size)
 
 	for idx := range size { // assuiming it is bulk string
 		b, _ := r.ReadByte() // the initial $
-
+		var value Value
 		if b == SIMPLE {
 			simple_msg := ParseSimpleMessage(r)
-			value := Value{typ: "simple", simple: simple_msg}
-			array[idx] = value
+			value = Value{typ: SIMPLE, simple: simple_msg}
 		} else if b == BULK {
 			bulk_string := ParseBulkString(r)
-			value := Value{typ: "bulk", bulk: bulk_string}
-			array[idx] = value
+			value = Value{typ: BULK, bulk: bulk_string}
+		} else if b == INTEGER {
+			integer := ParseInteger(r)
+			value = Value{typ: INTEGER, integer: int32(integer)}
 		}
 
+		array[idx] = value
 	}
 
-	fmt.Println("Parsed array: ", array)
 	return array
 
 }
