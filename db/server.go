@@ -15,11 +15,12 @@ func StartSession(conn net.Conn) {
 	p := NewParser(conn)
 
 	for {
-		b, err := p.r.ReadByte()
+		buf := make([]byte, 1024)
+		_, err := p.r.Read(buf)
 		if err != nil {
 			return
 		}
 
-		p.HandleRead(b)
+		go ServeRequest(p.conn, buf)
 	}
 }

@@ -1,17 +1,21 @@
 package db
 
 import (
-	"fmt"
+	"io"
 	"strings"
 )
 
-func (p *Parser) ParseSimpleMessage() string {
-	data, err := p.r.ReadString('\n')
-	if err != nil {
-		fmt.Println("error parsing simple message: ", err.Error())
-		return ""
+func ParseSimpleMessage(byteReader io.ByteReader) string {
+	simple_msg := make([]byte, 0)
+	for {
+		data, err := byteReader.ReadByte()
+		if err != nil || data == '\n' {
+			break
+		}
+		simple_msg = append(simple_msg, data)
 	}
-	return strings.TrimSpace((data))
+
+	return strings.TrimSpace(string(simple_msg))
 }
 
 func HandleSimpleMessage(m string) string {
